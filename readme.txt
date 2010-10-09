@@ -1,6 +1,6 @@
-Arduino Multi-Threading Library (mthread)
-Copyright (C) 2010  Jonathan Lamothe
-<jonathan@jlamothe.net>
+Arduino-Compatible Multi-Threading Library (mthread)
+
+Copyright (C) 2010 Jonathan Lamothe <jonathan@jlamothe.net>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -13,11 +13,15 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see: http://www.gnu.org/licenses/
 
 See license.txt for more details.
 
 *****
 
 Please note: This library also requires the newdel library available
-at <http://www.jlamothe.net/projects/newdel/newdel.zip>.
+at:
+
+git://github.com/jlamothe/newdel.git
+- or -
+http://github.com/jlamothe/newdel
