@@ -83,7 +83,7 @@ bool Thread::resume()
 
 }
 
-bool Thread::sleep(unsigned t)
+bool Thread::sleep(unsigned long t)
 {
 
   // Fail unless the thread is currently running:
@@ -92,7 +92,7 @@ bool Thread::sleep(unsigned t)
 
   // Set the sleep timeout:
   mode = sleep_mode;
-  resume_time = millis() + ((unsigned long)(t)) * 1000ul;
+  resume_time = millis() + t * 1000;
   return true;
 
 }

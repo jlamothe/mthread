@@ -93,7 +93,7 @@ public:
   /// @param t The number of seconds for which the Thread is to sleep.
 
   /// @return true on success, false otherwise.
-  bool sleep(unsigned t);
+  bool sleep(unsigned long t);
 
   /// @brief Puts the Thread to sleep for a certain number of
   /// microseconds.
