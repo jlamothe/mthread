@@ -162,10 +162,12 @@ private:
   /// instance must first be created.
   bool call();
 
-  unsigned long resume_time;	///< The time at which the Thread
-				///should be resumed.
-  Mode mode;			///< The Thread's running mode (can be
-				///read externally through the
+  unsigned long stop_time,	///< The time at which the thread was
+				///stopped.
+    wait_time;			///< The amount of time for which the
+				///thread is to wait.
+  Mode mode;			///< The Thread's running mode (can
+				///be read externally through the
 				///get_mode() function).
 
   friend class ThreadList;

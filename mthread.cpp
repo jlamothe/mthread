@@ -92,7 +92,8 @@ bool Thread::sleep(unsigned long t)
 
   // Set the sleep timeout:
   mode = sleep_mode;
-  resume_time = millis() + t * 1000;
+  stop_time = millis();
+  wait_time = t * 1000;
   return true;
 
 }
@@ -106,7 +107,8 @@ bool Thread::sleep_micro(unsigned long t)
 
   // Set the sleep timeout:
   mode = sleep_micro_mode;
-  resume_time = micros() + t;
+  stop_time = micros();
+  wait_time = t;
   return true;
 
 }
@@ -120,7 +122,8 @@ bool Thread::sleep_milli(unsigned long t)
 
   // Set the sleep timeout:
   mode = sleep_milli_mode;
-  resume_time = millis() + t;
+  stop_time = millis();
+  wait_time = t;
   return true;
 
 }
@@ -146,7 +149,6 @@ ThreadList::ThreadList(bool keep)
 
 bool Thread::call()
 {
-  unsigned long t;
 
   // Determine the Thread's mode and act accordingly:
   switch(mode)
@@ -171,7 +173,7 @@ bool Thread::call()
     case sleep_milli_mode:
 
       // Check if the sleep timeout has completed:
-      if(millis() >= resume_time)
+      if(millis() - stop_time >= wait_time)
 	{
 
 	  // Return to normal operation:
@@ -188,7 +190,7 @@ bool Thread::call()
     case sleep_micro_mode:
 
       // Check if the sleep timeout has completed:
-      if(micros() >= resume_time)
+      if(micros() - stop_time >= wait_time)
 	{
 
 	  // Return to normal operation:
