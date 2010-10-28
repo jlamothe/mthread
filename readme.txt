@@ -17,11 +17,7 @@ along with this program.  If not, see: http://www.gnu.org/licenses/
 
 See license.txt for more details.
 
-*****
+* * *
 
 Please note: This library also requires the newdel library available
-at:
-
-git://github.com/jlamothe/newdel.git
-- or -
-http://github.com/jlamothe/newdel
+at: http://github.com/jlamothe/newdel
