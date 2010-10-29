@@ -23,6 +23,10 @@
 #ifndef MTHREAD_H
 #define MTHREAD_H
 
+#ifndef DEFAULT_DEBOUNCE
+#define DEFAULT_DEBOUNCE 50	///< Default switch debounce time.
+#endif
+
 #include "../newdel/newdel.h"
 
 class ThreadList;
@@ -225,6 +229,72 @@ private:
   bool keep_flag;		///< Indicates whether or not to
 				///continue running the ThreadList
 				///after it has run out of Thread objects.
+
+};
+
+/// @brief Handler for a switch input.
+class SwitchInput : public Thread
+{
+public:
+
+  /// @brief Types of switches.
+  enum Type {
+    pull_up_internal,		///< Switch equipped with an internal
+				///pull-up resistor.
+    pull_up,			///< Switch equipped with an external
+				///pull-up resistor.
+    pull_down			///< Switch equipped with a pull-down
+				///resistor.
+  };
+
+  /// @brief Constructor.
+
+  /// @param pin The number of the switch to which the pin is
+  /// connected.
+
+  /// @param debounce The debounce time (in milliseconds).
+
+  /// @param type The type of switch connected.
+  SwitchInput(int pin,
+	      unsigned long deboune = DEFAULT_DEBOUNCE,
+	      Type type = pull_up_internal);
+
+  /// @brief Checks to see if the switch is closed.
+
+  /// @return true if the switch is closed, false otherwise.
+  bool is_closed();
+
+  /// @brief Checks to see if the switch is open.
+
+  /// @return true if the switch is open, false otherwise.
+  bool is_open();
+
+  /// @brief Called when the switch closes.
+  virtual void on_close();
+
+  /// @brief Called when the switch opens.
+  virtual void on_open();
+
+protected:
+
+  /// @brief Main loop.
+
+  /// @see Thread::loop().
+  bool loop();
+
+private:
+
+  unsigned long debounce,	///< The debounce time (in
+				///milliseconds).
+    last_change;		///< The time of the last change (in
+				///milliseconds).
+  int current_value,		///< The switch's current (reported)
+				///value.
+    last_value,			///< The switch's value on the last
+				///read.
+    pin;			///< The pin to which the switch is
+				///connected.
+  Type type;			///< The type of switch connected.
 
 };
 

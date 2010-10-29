@@ -294,6 +294,83 @@ bool ThreadList::loop()
 
 }
 
+SwitchInput::SwitchInput(int pin, unsigned long debounce, Type type)
+{
+  pinMode(pin, INPUT);
+  digitalWrite(pin, (type == pull_up_internal) ? HIGH : LOW);
+  this->debounce = debounce;
+  current_value = last_value = digitalRead(pin);
+  this->pin = pin;
+  this->type = type;
+}
+
+bool SwitchInput::is_closed()
+{
+  return current_value == (type == pull_down) ? HIGH : LOW;
+}
+
+bool SwitchInput::is_open()
+{
+  return current_value == (type == pull_down) ? LOW : HIGH;
+}
+
+void SwitchInput::on_close()
+{}
+
+void SwitchInput::on_open()
+{}
+
+bool SwitchInput::loop()
+{
+
+  // Terminate if requested:
+  if(kill_flag)
+    return false;
+
+  // Read the current pin value:
+  int val = digitalRead(pin);
+
+  // If it's changed, reset the debounce timer:
+  if(val != last_value)
+    {
+      last_change = millis();
+      last_value = val;
+    }
+
+  // If the debounce timer has expired and the switch value has
+  // changed:
+  if(millis() - last_change >= debounce && val != current_value)
+    {
+      current_value = val;
+
+      // Call the appropriate function:
+      switch(type)
+	{
+
+	  // Pull-up resistor:
+	case pull_up_internal:
+	case pull_up:
+	  if(val == HIGH)
+	    on_open();
+	  else
+	    on_close();
+	  break;
+
+	  // Pull-down resistor:
+	case pull_down:
+	  if(val == HIGH)
+	    on_close();
+	  else
+	    on_open();
+	  break;
+
+	}
+
+    }
+
+  return true;
+}
+
 void loop()
 {
 
