@@ -256,7 +256,7 @@ public:
 
   /// @param type The type of switch connected.
   SwitchInput(int pin,
-	      unsigned long deboune = DEFAULT_DEBOUNCE,
+	      unsigned long debounce = DEFAULT_DEBOUNCE,
 	      Type type = pull_up_internal);
 
   /// @brief Destructor.
