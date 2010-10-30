@@ -259,6 +259,9 @@ public:
 	      unsigned long deboune = DEFAULT_DEBOUNCE,
 	      Type type = pull_up_internal);
 
+  /// @brief Destructor.
+  virtual ~SwitchInput();
+
   /// @brief Checks to see if the switch is closed.
 
   /// @return true if the switch is closed, false otherwise.

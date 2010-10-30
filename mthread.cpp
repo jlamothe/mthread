@@ -304,6 +304,9 @@ SwitchInput::SwitchInput(int pin, unsigned long debounce, Type type)
   this->type = type;
 }
 
+SwitchInput::~SwitchInput()
+{}
+
 bool SwitchInput::is_closed()
 {
   return current_value == (type == pull_down) ? HIGH : LOW;
