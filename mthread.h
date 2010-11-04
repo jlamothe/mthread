@@ -24,8 +24,10 @@
 #define MTHREAD_H
 
 #ifndef DEFAULT_DEBOUNCE
-#define DEFAULT_DEBOUNCE 50	///< @brief Default switch debounce
-				///time.
+
+/// @brief Default switch debounce time.
+#define DEFAULT_DEBOUNCE 50
+
 #endif
 
 #include "../newdel/newdel.h"
@@ -294,8 +296,8 @@ private:
 				///milliseconds).
     last_change;		///< @brief The time of the last
 				///change (in milliseconds).
-  int current_value,		///< @brief The switch's current
-				///(reported) value.
+  int current_value,		///< @brief The switch's current value
+				///(after debounce filtering).
     last_value,			///< @brief The switch's value on the
 				///last read.
     pin;			///< @brief The pin to which the
