@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 
-/// @file newdel.h
+/// @file mthread.h
 /// @author Jonathan Lamothe
 
 // Arduino Multi-Threading Library (mthread)
@@ -305,15 +305,11 @@ private:
 
 };
 
-/// @defgroup mthread_globals Globals
+/// @brief A pointer to the main ThreadList.
 
-/// @{
-extern ThreadList
-*main_thread_list;		///< @brief A pointer to the main
-				///ThreadList.  This object will be
-				///run in place of the loop function
-				///expected in most Arduino programs.
-/// @}
+/// This object will be run in place of the loop function expected in
+/// most Arduino programs.
+extern ThreadList *main_thread_list;
 
 #endif	// MTHREAD_H
 
