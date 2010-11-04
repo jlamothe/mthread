@@ -24,7 +24,8 @@
 #define MTHREAD_H
 
 #ifndef DEFAULT_DEBOUNCE
-#define DEFAULT_DEBOUNCE 50	///< Default switch debounce time.
+#define DEFAULT_DEBOUNCE 50	///< @brief Default switch debounce
+				///time.
 #endif
 
 #include "../newdel/newdel.h"
@@ -40,15 +41,16 @@ public:
   /// @brief Various running modes for a Thread.
   enum Mode
     {
-      run_mode,			///< Thread is running.
-      pause_mode,		///< Thread is paused.
-      sleep_mode,		///< Thread is sleeping (for seconds).
-      sleep_milli_mode,		///< Thread is sleeping (for
+      run_mode,			///< @brief Thread is running.
+      pause_mode,		///< @brief Thread is paused.
+      sleep_mode,		///< @brief Thread is sleeping (for
+				///seconds).
+      sleep_milli_mode,		///< @brief Thread is sleeping (for
 				///milliseconds).
-      sleep_micro_mode,		///< Thread is sleeping (for
+      sleep_micro_mode,		///< @brief Thread is sleeping (for
 				///microseconds).
-      kill_mode			///< Thread is to be killed on next
-				///call.
+      kill_mode			///< @brief Thread is to be killed on
+				///next call.
     };
 
   /// @brief Constructor.
@@ -166,12 +168,12 @@ private:
   /// instance must first be created.
   bool call();
 
-  unsigned long stop_time,	///< The time at which the thread was
-				///stopped.
-    wait_time;			///< The amount of time for which the
-				///thread is to wait.
-  Mode mode;			///< The Thread's running mode (can
-				///be read externally through the
+  unsigned long stop_time,	///< @brief The time at which the
+				///thread was stopped.
+    wait_time;			///< @brief The amount of time for
+				///which the thread is to wait.
+  Mode mode;			///< @brief The Thread's running mode
+				///(can be read externally through the
 				///get_mode() function).
 
   friend class ThreadList;
@@ -220,15 +222,16 @@ protected:
 
 private:
 
-  Thread **thread;		///< An array of pointers to the
-				///Thread objects in the list.
-  unsigned thread_count,	///< The number of Thread objects in
-				///the list.
-    thread_index;		///< The index number of the active
-				///Thread.
-  bool keep_flag;		///< Indicates whether or not to
-				///continue running the ThreadList
-				///after it has run out of Thread objects.
+  Thread **thread;		///< @brief An array of pointers to
+				///the Thread objects in the list.
+  unsigned thread_count,	///< @brief The number of Thread
+				///objects in the list.
+    thread_index;		///< @brief The index number of the
+				///active Thread.
+  bool keep_flag;		///< @brief Indicates whether or not
+				///to continue running the ThreadList
+				///after it has run out of Thread
+				///objects.
 
 };
 
@@ -239,12 +242,12 @@ public:
 
   /// @brief Types of switches.
   enum Type {
-    pull_up_internal,		///< Switch equipped with an internal
-				///pull-up resistor.
-    pull_up,			///< Switch equipped with an external
-				///pull-up resistor.
-    pull_down			///< Switch equipped with a pull-down
-				///resistor.
+    pull_up_internal,		///< @brief Switch equipped with an
+				///internal pull-up resistor.
+    pull_up,			///< @brief Switch equipped with an
+				///external pull-up resistor.
+    pull_down			///< @brief Switch equipped with a
+				///pull-down resistor.
   };
 
   /// @brief Constructor.
@@ -287,17 +290,18 @@ protected:
 
 private:
 
-  unsigned long debounce,	///< The debounce time (in
+  unsigned long debounce,	///< @brief The debounce time (in
 				///milliseconds).
-    last_change;		///< The time of the last change (in
-				///milliseconds).
-  int current_value,		///< The switch's current (reported)
-				///value.
-    last_value,			///< The switch's value on the last
-				///read.
-    pin;			///< The pin to which the switch is
+    last_change;		///< @brief The time of the last
+				///change (in milliseconds).
+  int current_value,		///< @brief The switch's current
+				///(reported) value.
+    last_value,			///< @brief The switch's value on the
+				///last read.
+    pin;			///< @brief The pin to which the
+				///switch is connected.
+  Type type;			///< @brief The type of switch
 				///connected.
-  Type type;			///< The type of switch connected.
 
 };
 
@@ -305,10 +309,10 @@ private:
 
 /// @{
 extern ThreadList
-*main_thread_list;		///< A pointer to the main ThreadList.
-				///This object will be run in place of
-				///the loop function expected in most
-				///Arduino programs.
+*main_thread_list;		///< @brief A pointer to the main
+				///ThreadList.  This object will be
+				///run in place of the loop function
+				///expected in most Arduino programs.
 /// @}
 
 #endif	// MTHREAD_H
