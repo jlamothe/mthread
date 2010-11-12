@@ -22,3 +22,5 @@ is_open	KEYWORD2
 on_close	KEYWORD2
 on_open	KEYWORD2
 main_thread_list	KEYWORD1
+time_closed	KEYWORD2
+time_open	KEYWORD2
