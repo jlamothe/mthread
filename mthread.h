@@ -23,14 +23,10 @@
 #ifndef MTHREAD_H
 #define MTHREAD_H
 
-#ifndef DEFAULT_DEBOUNCE
+#include "../newdel/newdel.h"
 
 /// @brief Default switch debounce time.
 #define DEFAULT_DEBOUNCE 50
-
-#endif
-
-#include "../newdel/newdel.h"
 
 class ThreadList;
 void loop();
