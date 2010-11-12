@@ -323,6 +323,16 @@ void SwitchInput::on_close()
 void SwitchInput::on_open()
 {}
 
+unsigned long SwitchInput::time_closed()
+{
+  return is_closed() ? millis() - last_change : 0;
+}
+
+unsigned long SwitchInput::time_open()
+{
+  return is_open() ? millis() - last_change : 0;
+}
+
 bool SwitchInput::loop()
 {
 

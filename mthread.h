@@ -283,6 +283,20 @@ public:
   /// @brief Called when the switch opens.
   virtual void on_open();
 
+  /// @brief Checks the length of time for which the switch has been
+  /// closed.
+
+  /// @return The amount of time (in milliseconds) or 0 if the switch
+  /// is open.
+  unsigned long time_closed();
+
+  /// @brief Checks the length of time for which the switch has been
+  /// open.
+
+  /// @return The amount of time (in milliseconds) or 0 if the switch
+  /// is closed.
+  unsigned long time_open();
+
 protected:
 
   /// @brief Main loop.
