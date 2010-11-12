@@ -325,12 +325,12 @@ void SwitchInput::on_open()
 
 unsigned long SwitchInput::time_closed()
 {
-  return is_closed() ? millis() - last_change : 0;
+  return is_closed() ? millis() - last_debounce : 0;
 }
 
 unsigned long SwitchInput::time_open()
 {
-  return is_open() ? millis() - last_change : 0;
+  return is_open() ? millis() - last_debounce : 0;
 }
 
 bool SwitchInput::loop()
@@ -355,6 +355,7 @@ bool SwitchInput::loop()
   if(millis() - last_change >= debounce && val != current_value)
     {
       current_value = val;
+      last_debounce = last_change;
 
       // Call the appropriate function:
       switch(type)

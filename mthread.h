@@ -308,8 +308,12 @@ private:
 
   unsigned long debounce,	///< @brief The debounce time (in
 				///milliseconds).
-    last_change;		///< @brief The time of the last
-				///change (in milliseconds).
+    last_change,		///< @brief The time of the last
+				///change (in milliseconds - no
+				///debounce).
+    last_debounce;		///< @brief The time of the last
+				///change (in milliseconds - after
+				///debounce filtering).
   int current_value,		///< @brief The switch's current value
 				///(after debounce filtering).
     last_value,			///< @brief The switch's value on the
