@@ -60,8 +60,8 @@ bool Thread::kill(bool force)
 bool Thread::pause()
 {
 
-  // Fail unless the thread is running or already paused:
-  if(mode != run_mode && mode != pause_mode)
+  // Fail if the thread is in forced kill mode:
+  if(mode == kill_mode)
     return false;
 
   // Pause the Thread:
@@ -73,8 +73,8 @@ bool Thread::pause()
 bool Thread::resume()
 {
 
-  // Fail unless the thread is already running or paused:
-  if(mode != run_mode && mode != pause_mode)
+  // Fail if the thread is in forced kill mode:
+  if(mode == kill_mode)
     return false;
 
   // Resume the Thread:

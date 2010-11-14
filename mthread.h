@@ -80,10 +80,14 @@ public:
   /// This function will cause a Thread to pause until its resume()
   /// function is called.
 
+  /// This function will cancel any sleep timer currently in effect.
+
   /// @return true on success, false otherwise.
   bool pause();
 
   /// @brief Resumes a paused Thread.
+
+  /// This function will cancel any sleep timer currently in effect.
 
   /// @return true on success, false otherwise.
   bool resume();
