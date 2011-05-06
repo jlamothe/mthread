@@ -1,6 +1,6 @@
 // Arduino Multi-Threading Library (mthread)
 
-// Copyright (C) 2010 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -292,6 +292,33 @@ bool ThreadList::loop()
 			      sizeof(Thread *) * thread_count);
   return true;
 
+}
+
+EventHandler::~EventHandler()
+{}
+
+bool EventHandler::condition()
+{
+  return false;
+}
+
+bool EventHandler::loop()
+{
+
+  // Die if requested:
+  if(kill_flag)
+    return false;
+
+  // Run the event if the condition is met:
+  if(condition())
+    return on_event();
+
+  return true;
+}
+
+bool EventHandler::on_event()
+{
+  return false;
 }
 
 SwitchInput::SwitchInput(int pin, unsigned long debounce, Type type)

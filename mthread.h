@@ -5,7 +5,7 @@
 
 // Arduino Multi-Threading Library (mthread)
 
-// Copyright (C) 2010 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -234,6 +234,34 @@ private:
 				///to continue running the ThreadList
 				///after it has run out of Thread
 				///objects.
+
+};
+
+/// @brief Thread that only executes when a given event occurs.
+class EventHandler : public Thread
+{
+public:
+
+  /// @brief Destructor.
+  virtual ~EventHandler();
+
+protected:
+
+  /// @brief Evaluated on each call to determine whether or not to run
+  /// the event.
+
+  /// @return true if the event has occurred; false otherwise.
+  virtual bool condition();
+
+  /// @brief Main loop.
+
+  /// @see Thread::loop().
+  bool loop();
+
+  /// @brief called automatically when condition() evaluates true.
+
+  /// @return true if the event is to be watched for again; false otherwise.
+  virtual bool on_event();
 
 };
 
