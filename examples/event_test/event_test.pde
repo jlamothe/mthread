@@ -22,50 +22,58 @@
 #include <mthread.h>
 #include <newdel.h>
 
-#define OUTPUT_PIN 5
-#define NUM_SWITCHES 3
+#define COUNT 5
+#define WAIT_TIME 1000
 
-int switch_pin[] = { 2, 3, 4 };
-
-SwitchInput::Type switch_type[] = {
-  SwitchInput::pull_up_internal,
-  SwitchInput::pull_up,
-  SwitchInput::pull_down
-};
-
-class MySwitch : public SwitchInput
+class MyEvent : public EventHandler
 {
 public:
-  MySwitch(int pin, Type type);
-  void on_close();
-  void on_open();
+  MyEvent();
+protected:
+  bool condition();
+  bool on_event();
+private:
+  int count;
 };
 
-MySwitch::MySwitch(int pin, Type type) :
-  SwitchInput(pin, DEFAULT_DEBOUNCE, type)
-{}
-
-void MySwitch::on_close()
+MyEvent::MyEvent()
 {
-  digitalWrite(OUTPUT_PIN, HIGH);
+  count = 0;
 }
 
-void MySwitch::on_open()
+bool MyEvent::condition()
 {
-  digitalWrite(OUTPUT_PIN, LOW);
+  if(count < COUNT)
+    {
+      Serial.println("Event not triggered.");
+      count++;
+      delay(WAIT_TIME);
+      return false;
+    }
+  Serial.println("Event triggered.");
+  delay(WAIT_TIME);
+  return true;
+}
+
+bool MyEvent::on_event()
+{
+  if(count > 0)
+    {
+      Serial.println("Handler running.");
+      count--;
+      delay(WAIT_TIME);
+      return true;
+    }
+  Serial.println("Handler completed.");
+  delay(WAIT_TIME);
+  return false;
 }
 
 void setup()
 {
-  pinMode(OUTPUT_PIN, OUTPUT);
-  digitalWrite(OUTPUT_PIN, LOW);
-  MySwitch *sw[NUM_SWITCHES];
-  int i;
-  for(i = 0; i < NUM_SWITCHES; i++)
-    {
-      sw[i] = new MySwitch(switch_pin[i], switch_type[i]);
-      main_thread_list->add_thread(sw[i]);
-    }
+  Serial.begin(9600);
+  main_thread_list->add_thread(new MyEvent);
+  delay(1000);
 }
 
 // jl
