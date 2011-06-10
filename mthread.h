@@ -66,7 +66,8 @@ public:
 
   /// @param force If true, the Thread will be killed immediately on
   /// the next call without running any more loops, if false, the
-  /// Thread will have to opportunity to terminate cleanly.
+  /// Thread will have to opportunity to terminate cleanly but will be
+  /// resumed if sleeping or paused.
 
   /// @note If the force parameter is set to false, the Thread could
   /// possibly ignore or cancel the request, however this is still the
@@ -85,18 +86,16 @@ public:
   /// @return true on success, false otherwise.
   bool pause();
 
-  /// @brief Resumes a paused Thread.
-
-  /// This function will cancel any sleep timer currently in effect.
+  /// @brief Resumes a paused or sleeping Thread.
 
   /// @return true on success, false otherwise.
   bool resume();
 
   /// @brief Puts the Thread to sleep for a certain number of seconds.
 
-  /// If the loop() function is already running, it will be allowed to
-  /// finish but will not be called again until the timeout has
-  /// expired.
+  /// If already running, the thread's loop() function will be allowed
+  /// to finish, but will not be called again until the timeout has
+  /// expired or the resume() or kill() function has been called.
 
   /// @param t The number of seconds for which the Thread is to sleep.
 
@@ -106,9 +105,9 @@ public:
   /// @brief Puts the Thread to sleep for a certain number of
   /// microseconds.
 
-  /// If the loop() function is already running, it will be allowed to
-  /// finish will not be called again until the timeout has
-  /// expired.
+  /// If already running, the thread's loop() function will be allowed
+  /// to finish, but will not be called again until the timeout has
+  /// expired or the resume() or kill() function has been called.
 
   /// @param t The number of microseconds for which the Thread is to
   /// sleep.
@@ -119,9 +118,9 @@ public:
   /// @brief Puts the Thread to sleep for a certain number of
   /// milliseconds.
 
-  /// If the loop() function is already running, it will be allowed to
-  /// finish will not be called again until the timeout has
-  /// expired.
+  /// If already running, the thread's loop() function will be allowed
+  /// to finish, but will not be called again until the timeout has
+  /// expired or the resume() or kill() function has been called.
 
   /// @param t The number of milliseconds for which the Thread is to
   /// sleep.
@@ -242,6 +241,9 @@ class EventHandler : public Thread
 {
 public:
 
+  /// @brief Constructor.
+  EventHandler();
+
   /// @brief Destructor.
   virtual ~EventHandler();
 
@@ -249,6 +251,9 @@ protected:
 
   /// @brief Evaluated on each call to determine whether or not to run
   /// the event.
+
+  /// The condition will not be checked again until the on_event()
+  /// function returns false.
 
   /// @return true if the event has occurred; false otherwise.
   virtual bool condition();
@@ -260,8 +265,20 @@ protected:
 
   /// @brief called automatically when condition() evaluates true.
 
-  /// @return true if the event is to be watched for again; false otherwise.
+  /// @return true if the event hasn't been completely handled, false
+  /// to wait for the next event.
+
+  /// @note This function does not necessarily have to check the
+  /// kill_flag value as it will be honoured by the loop() function
+  /// when the trigger value is false.
   virtual bool on_event();
+
+private:
+
+  bool trigger;			///< @brief Set to true when the
+				///condition evaluates true, returns
+				///to false when the event has been
+				///handled.
 
 };
 

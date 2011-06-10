@@ -48,11 +48,8 @@ bool Thread::kill(bool force)
   if(mode == kill_mode)
     return false;
 
-  // If the thread is paused, wake it up:
-  if(mode == pause_mode)
-    mode = run_mode;
-
-  // Request that the thread be killed:
+  // Wake up the thread and request that it be killed:
+  mode = run_mode;
   kill_flag = true;
 
 }
@@ -87,7 +84,7 @@ bool Thread::sleep(unsigned long t)
 {
 
   // Fail unless the thread is currently running:
-  if(mode != run_mode)
+  if(mode == kill_mode || mode == pause_mode)
     return false;
 
   // Set the sleep timeout:
@@ -102,7 +99,7 @@ bool Thread::sleep_micro(unsigned long t)
 {
 
   // Fail unless the thread is currently running:
-  if(mode != run_mode)
+  if(mode == kill_mode || mode == pause_mode)
     return false;
 
   // Set the sleep timeout:
@@ -117,7 +114,7 @@ bool Thread::sleep_milli(unsigned long t)
 {
 
   // Fail unless the thread is currently running:
-  if(mode != run_mode)
+  if(mode == kill_mode || mode == pause_mode)
     return false;
 
   // Set the sleep timeout:
@@ -133,17 +130,6 @@ bool Thread::loop()
 
   // Do nothing:
   return false;
-
-}
-
-ThreadList::ThreadList(bool keep)
-{
-
-  // Initialize values:
-  thread = NULL;
-  thread_count = 0;
-  thread_index = 0;
-  keep_flag = keep;
 
 }
 
@@ -210,6 +196,17 @@ bool Thread::call()
   // happened - terminate with extreme prejudice:
   delete this;
   return false;
+
+}
+
+ThreadList::ThreadList(bool keep)
+{
+
+  // Initialize values:
+  thread = NULL;
+  thread_count = 0;
+  thread_index = 0;
+  keep_flag = keep;
 
 }
 
@@ -294,6 +291,11 @@ bool ThreadList::loop()
 
 }
 
+EventHandler::EventHandler()
+{
+  trigger = false;
+}
+
 EventHandler::~EventHandler()
 {}
 
@@ -305,13 +307,17 @@ bool EventHandler::condition()
 bool EventHandler::loop()
 {
 
-  // Die if requested:
-  if(kill_flag)
+  // Die if requested and idle:
+  if(!trigger && kill_flag)
     return false;
 
-  // Run the event if the condition is met:
-  if(condition())
-    return on_event();
+  // Continue running if already active:
+  if(trigger)
+    trigger = on_event();
+
+  // Otherwise, run the event if the condition is met:
+  else if(condition())
+    trigger = on_event();
 
   return true;
 }
