@@ -19,6 +19,20 @@
 
 // See license.txt for more details.
 
+// * * *
+
+// This program demonstrates the SwitchInput class.  It assumes three
+// switches are hooked up to pins 2, 3 and 4.  The switch on pin 2
+// should be a dry contact to ground (the internal pull-up is used on
+// this switch).  The switch on pin 3 should be a dry contact to
+// ground with an external pull-up resistor.  The switch on pin 4
+// should connect to the device's power output, with a pull-down
+// resistor to ground.  There shold also be an LED connected to pin 5
+// (with an appropriate resistor).
+
+// When any of these switches close, the LED will illuminate.  When
+// any of the switches open, the LED will go out.
+
 #include <mthread.h>
 #include <newdel.h>
 

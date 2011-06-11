@@ -18,6 +18,12 @@
 // along with this program.  If not, see
 // <http://www.gnu.org/licenses/>.
 
+// * * *
+
+// This program creates 5 seperate threads which report over serial
+// when they're called.  It can be tested by running the program and
+// watching the serial console.
+
 #include <newdel.h>
 #include <mthread.h>
 

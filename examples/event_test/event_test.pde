@@ -19,11 +19,19 @@
 
 // See license.txt for more details.
 
+// * * *
+
+// This program demonstrates the EventHandler class by creating an
+// event which will only evaluate true periodically and then run for a
+// while before waiting for the condition to evaluate true again.  The
+// program reports what's going on over the serial console for the
+// demonstration.
+
 #include <mthread.h>
 #include <newdel.h>
 
 #define COUNT 5
-#define WAIT_TIME 1000
+#define SLEEP_TIME 1
 
 class MyEvent : public EventHandler
 {
@@ -43,29 +51,27 @@ MyEvent::MyEvent()
 
 bool MyEvent::condition()
 {
+  sleep(SLEEP_TIME);
   if(count < COUNT)
     {
       Serial.println("Event not triggered.");
       count++;
-      delay(WAIT_TIME);
       return false;
     }
   Serial.println("Event triggered.");
-  delay(WAIT_TIME);
   return true;
 }
 
 bool MyEvent::on_event()
 {
+  sleep(SLEEP_TIME);
   if(count > 0)
     {
       Serial.println("Handler running.");
       count--;
-      delay(WAIT_TIME);
       return true;
     }
   Serial.println("Handler completed.");
-  delay(WAIT_TIME);
   return false;
 }
 
