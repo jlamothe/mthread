@@ -1,8 +1,8 @@
 // -*- mode: c++ -*-
 
-// Arduino Multi-Threading Library (mthread)
+// Arduino-Compatible Multi-Threading Library (mthread)
 
-// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010-2012 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -31,50 +31,46 @@
 class FooThread : public Thread
 {
 public:
-  FooThread(int id);
+    FooThread(int id);
 protected:
-  bool loop();
+    bool loop();
 private:
-  int id;
+    int id;
 };
 
 FooThread::FooThread(int id)
 {
-  // Set the ID:
-  this->id = id;
-
+    this->id = id;
 }
 
 bool FooThread::loop()
 {
 
-  // Die if requested:
-  if(kill_flag)
-    return false;
+    // Die if requested:
+    if(kill_flag)
+        return false;
 
-  // Print the status message:
-  Serial.print("FooThread ");
-  Serial.print(id);
-  Serial.println(" called.");
+    // Print the status message:
+    Serial.print("FooThread ");
+    Serial.print(id);
+    Serial.println(" called.");
 
-  // Sleep for one second:
-  sleep(1);
-  return true;
+    // Sleep for one second:
+    sleep(1);
+    return true;
 
 }
 
 void setup()
 {
 
-  // Create five threads and add them to the main ThreadList:
-  for(int i = 1; i <= 5; i++)
-    {
-      main_thread_list->add_thread(new FooThread(i));
-    }
+    // Create five threads and add them to the main ThreadList:
+    for(int i = 1; i <= 5; i++)
+        main_thread_list->add_thread(new FooThread(i));
 
-  // Initialize the serial connection:
-  Serial.begin(9600);
-  delay(1000);
+    // Initialize the serial connection:
+    Serial.begin(9600);
+    delay(1000);
 
 }
 

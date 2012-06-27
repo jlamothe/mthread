@@ -1,11 +1,11 @@
 // -*- mode: c++ -*-
 
-/// @file mthread.h
-/// @author Jonathan Lamothe
+/// \file mthread.h
+/// \author Jonathan Lamothe
 
 // Arduino Multi-Threading Library (mthread)
 
-// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010-2012 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -23,171 +23,162 @@
 #ifndef MTHREAD_H
 #define MTHREAD_H
 
+//
+// INCLUDES
+//
+
 #include "../newdel/newdel.h"
 
-/// @brief Default switch debounce time.
+/// \brief Default switch debounce time.
 #define DEFAULT_DEBOUNCE 50
 
 class ThreadList;
-void loop();
+void loop(void);
 
-/// @brief Provides thread functionality.
+//
+// CLASSES
+//
+
+/// \brief Provides thread functionality.
 class Thread
 {
 public:
 
-  /// @brief Various running modes for a Thread.
-  enum Mode
+    /// \brief Various running modes for a Thread.
+    enum Mode
     {
-      run_mode,			///< @brief Thread is running.
-      pause_mode,		///< @brief Thread is paused.
-      sleep_mode,		///< @brief Thread is sleeping (for
-				///seconds).
-      sleep_milli_mode,		///< @brief Thread is sleeping (for
-				///milliseconds).
-      sleep_micro_mode,		///< @brief Thread is sleeping (for
-				///microseconds).
-      kill_mode			///< @brief Thread is to be killed on
-				///next call.
+
+        /// \brief Thread is running.
+        run_mode,
+
+        /// \brief Thread is paused.
+        pause_mode,
+
+        /// \brief Thread is sleeping (for seconds).
+        sleep_mode,
+
+        /// \brief Thread is sleeping (for milliseconds).
+        sleep_milli_mode,
+
+        /// \brief Thread is sleeping (for microseconds).
+        sleep_micro_mode,
+
+        /// \brief Thread is to be killed on next call.
+        kill_mode
+
     };
 
-  /// @brief Constructor.
-  Thread();
+    /// \brief Constructor.
+    Thread();
 
-  /// @brief Destructor.
-  virtual ~Thread();
+    /// \brief Destructor.
+    virtual ~Thread();
 
-  /// @brief Returns the running mode for the Thread.
+    /// \brief Returns the running mode for the Thread.
+    /// \return The running mode.
+    Mode get_mode() const;
 
-  /// @return The running mode.
-  Mode get_mode() const;
+    /// \brief Kills a Thread.
+    /// \param force If true, the Thread will be killed immediately on
+    /// the next call without running any more loops, if false, the
+    /// Thread will have to opportunity to terminate cleanly but will
+    /// be resumed if sleeping or paused.
+    /// \note If the force parameter is set to false, the Thread could
+    /// possibly ignore or cancel the request, however this is still
+    /// the preferred way of calling the kill() function.
+    /// \return true on success, false on failure.
+    bool kill(bool force = false);
 
-  /// @brief Kills a Thread.
+    /// \brief Pauses a Thread.  This function will cause a Thread to
+    /// pause until its resume() function is called.  This function
+    /// will cancel any sleep timer currently in effect.
+    /// \return true on success, false on failure.
+    bool pause();
 
-  /// @param force If true, the Thread will be killed immediately on
-  /// the next call without running any more loops, if false, the
-  /// Thread will have to opportunity to terminate cleanly but will be
-  /// resumed if sleeping or paused.
+    /// \brief Resumes a paused or sleeping Thread.
+    /// \return true on success, false on failure.
+    bool resume();
 
-  /// @note If the force parameter is set to false, the Thread could
-  /// possibly ignore or cancel the request, however this is still the
-  /// preferred way of calling the kill() function.
+    /// \brief Puts the Thread to sleep for a certain number of
+    /// seconds.  If already running, the thread's loop() function
+    /// will be allowed to finish, but will not be called again until
+    /// the timeout has expired, or the resume() or kill() function
+    /// has been called.
+    /// \param t The number of seconds the Thread is to sleep for.
+    /// \return true on success, false on failure.
+    bool sleep(unsigned long t);
 
-  /// @return true on success, false otherwise.
-  bool kill(bool force = false);
+    /// \brief Puts the Thread to sleep for a certain number of
+    /// microseconds.  If already running, the thread's loop()
+    /// function will be allowed to finish, but will not be called
+    /// again until the timeout has expired, or the resume() or kill()
+    /// function has been called.
+    /// \param t The number of microseconds the Thread is to sleep for
+    /// \return true on success, false on failure.
+    bool sleep_micro(unsigned long t);
 
-  /// @brief Pauses a Thread.
-
-  /// This function will cause a Thread to pause until its resume()
-  /// function is called.
-
-  /// This function will cancel any sleep timer currently in effect.
-
-  /// @return true on success, false otherwise.
-  bool pause();
-
-  /// @brief Resumes a paused or sleeping Thread.
-
-  /// @return true on success, false otherwise.
-  bool resume();
-
-  /// @brief Puts the Thread to sleep for a certain number of seconds.
-
-  /// If already running, the thread's loop() function will be allowed
-  /// to finish, but will not be called again until the timeout has
-  /// expired or the resume() or kill() function has been called.
-
-  /// @param t The number of seconds for which the Thread is to sleep.
-
-  /// @return true on success, false otherwise.
-  bool sleep(unsigned long t);
-
-  /// @brief Puts the Thread to sleep for a certain number of
-  /// microseconds.
-
-  /// If already running, the thread's loop() function will be allowed
-  /// to finish, but will not be called again until the timeout has
-  /// expired or the resume() or kill() function has been called.
-
-  /// @param t The number of microseconds for which the Thread is to
-  /// sleep.
-
-  /// @return true on success, false otherwise.
-  bool sleep_micro(unsigned long t);
-
-  /// @brief Puts the Thread to sleep for a certain number of
-  /// milliseconds.
-
-  /// If already running, the thread's loop() function will be allowed
-  /// to finish, but will not be called again until the timeout has
-  /// expired or the resume() or kill() function has been called.
-
-  /// @param t The number of milliseconds for which the Thread is to
-  /// sleep.
-
-  /// @return true on success, false otherwise.
-  bool sleep_milli(unsigned long t);
+    /// \brief Puts the Thread to sleep for a certain number of
+    /// milliseconds.  If already running, the thread's loop()
+    /// function will be allowed to finish, but will not be called
+    /// again until the timeout has expired, or the resume() or kill()
+    /// function has been called.
+    /// \param t The number of milliseconds the Thread is to sleep
+    /// for.
+    /// \return true on success, false on failure.
+    bool sleep_milli(unsigned long t);
 
 protected:
 
-  /// @brief The Thread's main loop.
+    /// \brief The Thread's main loop.  This function is to be
+    /// overridden.  It takes the place of the loop function found in
+    /// most Arduino programs.  A single loop() should run as quickly
+    /// as possible, as it will hold up other Thread objects while it
+    /// is executing.
+    /// \note At the beginning of each loop, the function should check
+    /// the kill_flag.
+    /// \return true if the loop needs to be called again, false if
+    /// the Thread has completed executing (at which point it will be
+    /// destroyed).
+    virtual bool loop();
 
-  /// This function is to be overridden.  It takes the place of the
-  /// loop function found in most Arduino programs.  A single loop()
-  /// should run as quickly as possible, as it will hold up other
-  /// Thread objects while it is executing.
-
-  /// @see kill_flag.
-
-  /// @return true if the loop needs to be called again, false if the
-  /// Thread has completed executing (at which point it will be
-  /// destroyed).
-  virtual bool loop();
-
-  /// @brief Kill flag.
-
-  /// This variable should be checked at the beginning of every loop()
-  /// function.  If it is true, the Thread has been requested to be
-  /// killed, and the loop() function should behave accordingly.  The
-  /// request can be cancelled by resetting it to false.
-  bool kill_flag;
+    /// \brief Kill flag.  This variable should be checked at the
+    /// beginning of every loop() function.  If it is true, the Thread
+    /// has been requested to be killed, and the loop() function
+    /// should behave accordingly.  The request can be denied by
+    /// resetting it to false.
+    bool kill_flag;
 
 private:
 
-  /// @brief Determines if the function is active and runs through a
-  /// loop if appropriate.
+    /// \brief Determines if the function is active and runs through a
+    /// loop if appropriate.
+    /// This function is called automatically by a ThreadList.
+    /// \return true if the Thread needs to be called again, false if
+    /// the Thread has completed execution.
+    /// \note It is important to note that once a Thread has completed
+    /// its execution it will automatically destroy itself and MUST
+    /// NOT be used again.  A new instance must first be created.
+    bool call();
 
-  /// This function is called automatically by a ThreadList.
+    /// \brief The time the thread was stopped at.
+    unsigned long stop_time;
 
-  /// @return true if the Thread needs to be called again, false if
-  /// the Thread has completed execution.
+    /// \brief The amount of the the thread is to wait for.
+    unsigned long wait_time;
 
-  /// @note This function is called automatically by a ThreadList
-  /// object.  It is important to note that once a Thread has
-  /// completed its execution (this function returns false) it will
-  /// automatically destroy itself and MUST NOT be used again.  A new
-  /// instance must first be created.
-  bool call();
+    /// \brief The thread's running mode (can be read through the
+    /// get_mode() function).
+    Mode mode;
 
-  unsigned long stop_time,	///< @brief The time at which the
-				///thread was stopped.
-    wait_time;			///< @brief The amount of time for
-				///which the thread is to wait.
-  Mode mode;			///< @brief The Thread's running mode
-				///(can be read externally through the
-				///get_mode() function).
-
-  friend class ThreadList;
-  friend void loop();
+    friend class ThreadList;
+    friend void loop(void);
 };
 
-/// @brief A class for running several Thread objects simultaneously.
-
-/// A ThreadList object is a Thread in and of itself.  This allows the
-/// creation of tiered ThreadList objects by placing a lower-priority
-/// ThreadList inside of a higher-priority ThreadList.
-
-/// @note DO NOT place a Thread in more than one ThreadList or more
+/// \brief An object for running several Thread objects
+/// simultaneously.  A ThreadList object is a Thread in and of itself.
+/// This allows the creation of tiered ThreadList objects by placing a
+/// lower-priority ThreadList inside of a higher-priority ThreadList.
+/// \note DO NOT place a Thread in more than one ThreadList or more
 /// than once in a single ThreadList. DO NOT place a ThreadList inside
 /// of itself or one of its children.  Also, DO NOT place the @link
 /// mthread_globals::main_thread_list main_thread_list @endlink in
@@ -197,185 +188,176 @@ class ThreadList : public Thread
 {
 public:
 
-  /// @brief Constructor.
+    /// \brief Constructor.
 
-  /// @param keep If true, the ThreadList will continue to run even
-  /// after it's empty, otherwise it will automatically destroy itself
-  /// once all of its Thread objects have finished.
-  ThreadList(bool keep = false);
+    /// \param keep If true, the ThreadList will continue to run even
+    /// after it's empty, otherwise it will automatically destroy
+    /// itself once all of its Thread objects have finished.
+    ThreadList(bool keep = false);
 
-  /// @brief Destructor.
-  ~ThreadList();
+    /// \brief Destructor.
+    ~ThreadList();
 
-  /// @brief Adds a Thread to the ThreadList.
-
-  /// @param t A pointer to the Thread to be added.
-
-  /// @return true on success, false otherwise.
-  bool add_thread(Thread *t);
+    /// \brief Adds a Thread to the ThreadList.
+    /// \param t A pointer to the Thread to be added.
+    /// \return true on success, false on failure.
+    bool add_thread(Thread *t);
 
 protected:
 
-  /// @brief The main loop.
-
-  /// @see Thread::loop().
-  bool loop();
+    /// \brief The main loop.
+    /// \see Thread::loop().
+    bool loop();
 
 private:
 
-  Thread **thread;		///< @brief An array of pointers to
-				///the Thread objects in the list.
-  unsigned thread_count,	///< @brief The number of Thread
-				///objects in the list.
-    thread_index;		///< @brief The index number of the
-				///active Thread.
-  bool keep_flag;		///< @brief Indicates whether or not
-				///to continue running the ThreadList
-				///after it has run out of Thread
-				///objects.
+    /// \brief An array of pointers to the Thread objects in the list.
+    Thread **thread;
+
+    /// \brief The number of Thread objects in the list.
+    unsigned thread_count;
+
+    /// \brief The index number of the active thread.
+    unsigned thread_index;
+
+    /// \brief If true, the ThreadList will not destroy itself when it
+    /// becomes empty.
+    bool keep_flag;
 
 };
 
-/// @brief Thread that only executes when a given event occurs.
+/// \brief A Thread that only executes when a given event occurs.
 class EventHandler : public Thread
 {
 public:
 
-  /// @brief Constructor.
-  EventHandler();
+    /// \brief Constructor.
+    EventHandler();
 
-  /// @brief Destructor.
-  virtual ~EventHandler();
+    /// \brief Destructor.
+    virtual ~EventHandler();
 
 protected:
 
-  /// @brief Evaluated on each call to determine whether or not to run
-  /// the event.
+    /// \brief Condition to be evaluated on each call to determine
+    /// whether or not to run the event.  The condition will not be
+    /// checked again until the on_event() function returns false.
+    /// \return true if the event has occurred; false if it has not.
+    virtual bool condition();
 
-  /// The condition will not be checked again until the on_event()
-  /// function returns false.
+    /// \brief Main loop.
+    /// \see Thread::loop().
+    bool loop();
 
-  /// @return true if the event has occurred; false otherwise.
-  virtual bool condition();
-
-  /// @brief Main loop.
-
-  /// @see Thread::loop().
-  bool loop();
-
-  /// @brief called automatically when condition() evaluates true.
-
-  /// @return true if the event hasn't been completely handled, false
-  /// to wait for the next event.
-
-  /// @note This function does not necessarily have to check the
-  /// kill_flag value as it will be honoured by the loop() function
-  /// when the trigger value is false.
-  virtual bool on_event();
+    /// \brief Called when the even occurs.
+    /// \return true if the event hasn't been completely handled,
+    /// false to wait for the next event.
+    /// \note This function does not necessarily have to check the
+    /// kill_flag value as it will be honoured by the loop() function
+    /// when the trigger value is false.
+    virtual bool on_event();
 
 private:
 
-  bool trigger;			///< @brief Set to true when the
-				///condition evaluates true, returns
-				///to false when the event has been
-				///handled.
+    /// \brief Becomes true when the event occurs; returns to false
+    /// when the event has been handled.
+    bool trigger;
 
 };
 
-/// @brief Handler for a switch input.
+/// \brief Handler for a switch input.
 class SwitchInput : public Thread
 {
 public:
 
-  /// @brief Types of switches.
-  enum Type {
-    pull_up_internal,		///< @brief Switch equipped with an
-				///internal pull-up resistor.
-    pull_up,			///< @brief Switch equipped with an
-				///external pull-up resistor.
-    pull_down			///< @brief Switch equipped with a
-				///pull-down resistor.
-  };
+    /// \brief Types of switches.
+    enum Type {
 
-  /// @brief Constructor.
+        /// \brief Switch uses the internal pull-up resistor.
+        pull_up_internal,
 
-  /// @param pin The number of the switch to which the pin is
-  /// connected.
+        /// \brief Switch uses an external pull-up resistor.
+        pull_up,
 
-  /// @param debounce The debounce time (in milliseconds).
+        /// \brief Switch uses an external pull-down resistor.
+        pull_down
 
-  /// @param type The type of switch connected.
-  SwitchInput(int pin,
-	      unsigned long debounce = DEFAULT_DEBOUNCE,
-	      Type type = pull_up_internal);
+    };
 
-  /// @brief Destructor.
-  virtual ~SwitchInput();
+    /// \brief Constructor.
+    /// \param pin The pin number the switch is connected to.
+    /// \param debounce The debounce time (in milliseconds).
+    /// \param type The type of switch connected.
+    SwitchInput(int pin,
+                unsigned long debounce = DEFAULT_DEBOUNCE,
+                Type type = pull_up_internal);
 
-  /// @brief Checks to see if the switch is closed.
+    /// \brief Destructor.
+    virtual ~SwitchInput();
 
-  /// @return true if the switch is closed, false otherwise.
-  bool is_closed();
+    /// \brief Checks to see if the switch is closed.
+    /// \return true if the switch is closed, false if it's open.
+    bool is_closed() const;
 
-  /// @brief Checks to see if the switch is open.
+    /// \brief Checks to see if the switch is open.
+    /// \return true if the switch is open, false if it's closed.
+    bool is_open() const;
 
-  /// @return true if the switch is open, false otherwise.
-  bool is_open();
+    /// \brief Called once when the switch closes.
+    virtual void on_close();
 
-  /// @brief Called when the switch closes.
-  virtual void on_close();
+    /// \brief Called once when the switch opens.
+    virtual void on_open();
 
-  /// @brief Called when the switch opens.
-  virtual void on_open();
+    /// \brief Checks the length of time the switch has been closed.
+    /// \return The amount of time (in milliseconds) the switch has
+    /// been closed, or 0 if the switch is open.
+    unsigned long time_closed() const;
 
-  /// @brief Checks the length of time for which the switch has been
-  /// closed.
-
-  /// @return The amount of time (in milliseconds) or 0 if the switch
-  /// is open.
-  unsigned long time_closed();
-
-  /// @brief Checks the length of time for which the switch has been
-  /// open.
-
-  /// @return The amount of time (in milliseconds) or 0 if the switch
-  /// is closed.
-  unsigned long time_open();
+    /// \brief Checks the length of time the switch has been open.
+    /// \return The amount of time (in milliseconds) the switch has
+    /// been open, or 0 if the switch is closed.
+    unsigned long time_open() const;
 
 protected:
 
-  /// @brief Main loop.
-
-  /// @see Thread::loop().
-  bool loop();
+    /// \brief Main loop.
+    /// \see Thread::loop().
+    bool loop();
 
 private:
 
-  unsigned long debounce,	///< @brief The debounce time (in
-				///milliseconds).
-    last_change,		///< @brief The time of the last
-				///change (in milliseconds - no
-				///debounce).
-    last_debounce;		///< @brief The time of the last
-				///change (in milliseconds - after
-				///debounce filtering).
-  int current_value,		///< @brief The switch's current value
-				///(after debounce filtering).
-    last_value,			///< @brief The switch's value on the
-				///last read.
-    pin;			///< @brief The pin to which the
-				///switch is connected.
-  Type type;			///< @brief The type of switch
-				///connected.
+    /// \brief The debounce time (in milliseconds).
+    unsigned long debounce;
+
+    /// \brief The time of the last change (in millisecnods, ignoring
+    /// debounce).
+    unsigned long last_change;
+
+    /// \brief The time of the last change (in milliseconds, after
+    /// debounce filtering).
+    unsigned long last_debounce;
+
+    /// \brief The switch's current value (after debounce filtering).
+    int current_value;
+
+    /// \brief The switch's value on the last read (ignoring
+    /// debounce).
+    int last_value;
+
+    /// \brief The pin the switch is connected to.
+    int pin;
+
+    /// \brief The type of switch connected.
+    Type type;
 
 };
 
-/// @brief A pointer to the main ThreadList.
-
+/// \brief A pointer to the main ThreadList.
 /// This object will be run in place of the loop function expected in
 /// most Arduino programs.
 extern ThreadList *main_thread_list;
 
-#endif	// MTHREAD_H
+#endif  // MTHREAD_H
 
 // jl

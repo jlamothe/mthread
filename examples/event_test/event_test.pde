@@ -2,7 +2,7 @@
 
 // Arduino-Compatible Multi-Threading Library (mthread)
 
-// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010-2012 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -36,50 +36,50 @@
 class MyEvent : public EventHandler
 {
 public:
-  MyEvent();
+    MyEvent();
 protected:
-  bool condition();
-  bool on_event();
+    bool condition();
+    bool on_event();
 private:
-  int count;
+    int count;
 };
 
 MyEvent::MyEvent()
 {
-  count = 0;
+    count = 0;
 }
 
 bool MyEvent::condition()
 {
-  sleep(SLEEP_TIME);
-  if(count < COUNT)
+    sleep(SLEEP_TIME);
+    if(count < COUNT)
     {
-      Serial.println("Event not triggered.");
-      count++;
-      return false;
+        Serial.println("Event not triggered.");
+        count++;
+        return false;
     }
-  Serial.println("Event triggered.");
-  return true;
+    Serial.println("Event triggered.");
+    return true;
 }
 
 bool MyEvent::on_event()
 {
-  sleep(SLEEP_TIME);
-  if(count > 0)
+    sleep(SLEEP_TIME);
+    if(count > 0)
     {
-      Serial.println("Handler running.");
-      count--;
-      return true;
+        Serial.println("Handler running.");
+        count--;
+        return true;
     }
-  Serial.println("Handler completed.");
-  return false;
+    Serial.println("Handler completed.");
+    return false;
 }
 
 void setup()
 {
-  Serial.begin(9600);
-  main_thread_list->add_thread(new MyEvent);
-  delay(1000);
+    Serial.begin(9600);
+    main_thread_list->add_thread(new MyEvent);
+    delay(1000);
 }
 
 // jl

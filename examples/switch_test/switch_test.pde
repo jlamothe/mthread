@@ -2,7 +2,7 @@
 
 // Arduino-Compatible Multi-Threading Library (mthread)
 
-// Copyright (C) 2010, 2011 Jonathan Lamothe <jonathan@jlamothe.net>
+// Copyright (C) 2010-2012 Jonathan Lamothe <jonathan@jlamothe.net>
 
 // This program is free software: you can redistribute it and/or
 // modify it under the terms of the GNU General Public License as
@@ -42,43 +42,43 @@
 int switch_pin[] = { 2, 3, 4 };
 
 SwitchInput::Type switch_type[] = {
-  SwitchInput::pull_up_internal,
-  SwitchInput::pull_up,
-  SwitchInput::pull_down
+    SwitchInput::pull_up_internal,
+    SwitchInput::pull_up,
+    SwitchInput::pull_down
 };
 
 class MySwitch : public SwitchInput
 {
 public:
-  MySwitch(int pin, Type type);
-  void on_close();
-  void on_open();
+    MySwitch(int pin, Type type);
+    void on_close();
+    void on_open();
 };
 
 MySwitch::MySwitch(int pin, Type type) :
-  SwitchInput(pin, DEFAULT_DEBOUNCE, type)
+    SwitchInput(pin, DEFAULT_DEBOUNCE, type)
 {}
 
 void MySwitch::on_close()
 {
-  digitalWrite(OUTPUT_PIN, HIGH);
+    digitalWrite(OUTPUT_PIN, HIGH);
 }
 
 void MySwitch::on_open()
 {
-  digitalWrite(OUTPUT_PIN, LOW);
+    digitalWrite(OUTPUT_PIN, LOW);
 }
 
 void setup()
 {
-  pinMode(OUTPUT_PIN, OUTPUT);
-  digitalWrite(OUTPUT_PIN, LOW);
-  MySwitch *sw[NUM_SWITCHES];
-  int i;
-  for(i = 0; i < NUM_SWITCHES; i++)
+    pinMode(OUTPUT_PIN, OUTPUT);
+    digitalWrite(OUTPUT_PIN, LOW);
+    MySwitch *sw[NUM_SWITCHES];
+    int i;
+    for(i = 0; i < NUM_SWITCHES; i++)
     {
-      sw[i] = new MySwitch(switch_pin[i], switch_type[i]);
-      main_thread_list->add_thread(sw[i]);
+        sw[i] = new MySwitch(switch_pin[i], switch_type[i]);
+        main_thread_list->add_thread(sw[i]);
     }
 }
 
