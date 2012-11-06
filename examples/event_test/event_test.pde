@@ -29,7 +29,6 @@
 // demonstration.
 
 #include <mthread.h>
-#include <newdel.h>
 
 #define COUNT 5
 #define SLEEP_TIME 1
