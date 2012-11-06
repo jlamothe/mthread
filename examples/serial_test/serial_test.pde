@@ -24,7 +24,6 @@
 // when they're called.  It can be tested by running the program and
 // watching the serial console.
 
-#include <newdel.h>
 #include <mthread.h>
 
 // Our custom Thread:
