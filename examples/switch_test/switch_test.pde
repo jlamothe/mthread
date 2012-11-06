@@ -35,7 +35,6 @@
 // any of the switches open, the LED will go out.
 
 #include <mthread.h>
-#include <newdel.h>
 
 #define OUTPUT_PIN 5
 #define NUM_SWITCHES 3

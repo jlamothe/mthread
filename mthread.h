@@ -28,7 +28,11 @@
 // INCLUDES
 //
 
-#include "../newdel/newdel.h"
+ #if defined(ARDUINO) && ARDUINO >= 100
+ #include "Arduino.h"
+ #else
+ #include "WProgram.h"
+ #endif
 
 /// \brief Default switch debounce time.
 #define DEFAULT_DEBOUNCE 50
