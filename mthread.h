@@ -28,8 +28,6 @@
 // INCLUDES
 //
 
-#include "../newdel/newdel.h"
-
 /// \brief Default switch debounce time.
 #define DEFAULT_DEBOUNCE 50
 
